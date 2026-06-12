@@ -62,6 +62,7 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     user: dict
+    access_token: str
 
 
 class PresignRequest(BaseModel):
@@ -85,7 +86,8 @@ async def login(body: LoginRequest, response: Response, db: AsyncSession = Depen
         max_age=settings.jwt_expire_hours * 3600,
     )
     return LoginResponse(
-        user={"id": str(user.id), "email": user.email, "name": user.name, "role": user.role.value}
+        user={"id": str(user.id), "email": user.email, "name": user.name, "role": user.role.value},
+        access_token=token,
     )
 
 
