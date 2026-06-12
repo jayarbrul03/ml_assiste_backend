@@ -62,7 +62,6 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     user: dict
-    access_token: str
 
 
 class PresignRequest(BaseModel):
@@ -82,23 +81,17 @@ async def login(body: LoginRequest, response: Response, db: AsyncSession = Depen
         key=COOKIE_NAME,
         value=token,
         httponly=True,
-        samesite=settings.cookie_samesite,
-        secure=settings.cookie_secure,
+        samesite="lax",
         max_age=settings.jwt_expire_hours * 3600,
     )
     return LoginResponse(
-        user={"id": str(user.id), "email": user.email, "name": user.name, "role": user.role.value},
-        access_token=token,
+        user={"id": str(user.id), "email": user.email, "name": user.name, "role": user.role.value}
     )
 
 
 @app.post("/auth/logout")
 async def logout(response: Response):
-    response.delete_cookie(
-        COOKIE_NAME,
-        samesite=settings.cookie_samesite,
-        secure=settings.cookie_secure,
-    )
+    response.delete_cookie(COOKIE_NAME)
     return {"ok": True}
 
 

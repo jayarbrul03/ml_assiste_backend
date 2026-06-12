@@ -7,4 +7,6 @@ __pycache__/
 .venv/
 dist/
 *.egg-info/
+data/avplatform.db
+data/uploads/
 
